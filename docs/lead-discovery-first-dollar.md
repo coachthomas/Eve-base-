@@ -1,6 +1,6 @@
 # Energy Culture lead discovery — first revenue milestone
 
-Status: implementation scope; not a deployed or tested application.
+Status: first local intake and outcome-tracking prototype implemented and tested; not deployed.
 Owner: Thomas J. Brady / Energy Culture LLC.
 Goal: help Thomas find relevant coaching conversations and track the first attributable paid booking through EnergyCulture.org.
 
@@ -41,4 +41,8 @@ No invented identities or contacts. Keep demonstration data visibly separate fro
 Implement source-linked intake and outcome tracking first, then validate one retrieval connector and add coaching-specific ranking.
 Use the existing Energy Culture booking offer; its final price and booking URL must be verified before inserting them into outreach.
 Do not incur hosting or API charges without an agreed budget.
-Current execution environment is unavailable, so no installation, build or runtime tests have been performed.
+Execution environment recovered on October 6, 2026. Implemented apps/lead-discovery with source-linked intake, manual offer matching and payment evidence tracking. Runtime tests passed for invalid URLs, duplicate sources, unknown intent, paid outcome validation and persistence. Automated retrieval/ranking and public hosting remain unimplemented.
+
+## Warm lead requirement — October 6, 2026
+
+Thomas explicitly wants proactive discovery of people he can reach out to, alongside inbound enquiries. Prioritize source-supported requests for coaching or guidance. A warm candidate requires evidence of expressed need, relevant service fit, recency when known, and an appropriate permitted contact route; it does not mean the person has consented to marketing or is ready to buy. Show the original URL, exact supporting excerpt, date, fit rationale and suggested next step. Topic mentions alone stay unqualified. No invented contact details or automatic outreach. Implement validated retrieval and evidence-based ranking next.

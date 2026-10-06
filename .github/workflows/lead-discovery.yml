@@ -1,0 +1,28 @@
+name: Energy Culture Lead Discovery
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 10 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: energy-culture-lead-discovery
+  cancel-in-progress: false
+jobs:
+  discover:
+    if: vars.LEAD_MACHINE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Test collector
+        working-directory: apps/lead-discovery
+        run: python3 -m unittest discover -s tests -v
+      - name: Discover and save to private Notion
+        env:
+          LEAD_ALERT_FEEDS: ${{ secrets.LEAD_ALERT_FEEDS }}
+          NOTION_LEADS_TOKEN: ${{ secrets.NOTION_LEADS_TOKEN }}
+          NOTION_LEADS_DATA_SOURCE: '372a2ce9-92a9-455f-8826-5f771be0350b'
+        run: python3 apps/lead-discovery/collector.py
