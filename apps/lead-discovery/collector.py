@@ -21,6 +21,8 @@ VERSION = '2025-09-03'
 DATA_SOURCE = '372a2ce9-92a9-455f-8826-5f771be0350b'
 BLOCKED = ('reddit.com', 'redd.it', 'linkedin.com', 'facebook.com', 'instagram.com')
 REQUEST = re.compile(r'\b(?:looking for|seeking|searching for|need(?:ing)?|recommend(?:ations for)?|can anyone recommend)\b.{0,90}\b(?:life coach|personal coach|authenticity coach|spiritual coach|coaching|life coaching)\b', re.I)
+GUIDANCE_REQUEST = re.compile(r'\b(?:looking for|seeking|searching for|need(?:ing)?|can anyone recommend)\b.{0,90}\b(?:guidance|a guide|a mentor|mentorship)\b', re.I)
+AUDIENCE = re.compile(r'\b(?:spiritual awakening|personal awakening|paranormal|anomalous experience|authenticity|personal growth|life direction|life purpose)\b', re.I)
 EXCLUDE = re.compile(r'\b(?:hiring|job opening|coach certification|become a coach|football coach|basketball coach|soccer coach)\b', re.I)
 GROWTH = re.compile(r'\b(?:authenticity|genuine|values|purpose|direction|personal growth|life transition)\b', re.I)
 PERSONAL = re.compile(r'\b(?:personalized|one.on.one|individual coaching|custom coaching)\b', re.I)
@@ -105,7 +107,8 @@ def parse_feed(raw):
 def qualify(item, now=None):
     now = now or datetime.now(timezone.utc)
     text = item['title'] + ' ' + item['excerpt']
-    if blocked(item['url']) or EXCLUDE.search(text) or not REQUEST.search(text):
+    request_found = REQUEST.search(text) or (GUIDANCE_REQUEST.search(text) and AUDIENCE.search(text))
+    if blocked(item['url']) or EXCLUDE.search(text) or not request_found:
         return None
     if item['published']:
         age = now - datetime.fromisoformat(item['published'])
