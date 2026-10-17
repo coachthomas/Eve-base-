@@ -26,7 +26,7 @@ def install(root, home, dry_run=False):
             out.write('OPENAI_API_KEY=\nOPENAI_MODEL=gpt-5-mini\nWORKER_DAILY_CALLS=0\nWORKER_MAX_ROUNDS=12\n')
     env.chmod(0o600)
     unit.write_text('[Unit]\nDescription=Energy Culture continuous worker\n\n[Service]\nType=simple\n'
-        +'WorkingDirectory='+quoted(root)+'\nEnvironmentFile='+quoted(env)+'\n'
+        +'WorkingDirectory='+str(root).replace('%','%%')+'\nEnvironmentFile='+str(env).replace('%','%%')+'\n'
         +'ExecStart='+quoted(sys.executable)+' '+quoted(root/'ops/continuous-worker/worker.py')
         +' run --root '+quoted(root)+' --state '+quoted(state)+'\n'
         +'Restart=on-failure\nRestartSec=10\nTimeoutStopSec=150\nUMask=0077\n'
