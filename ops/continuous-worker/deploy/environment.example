@@ -1,0 +1,7 @@
+# Put real values in /etc/energy-culture-worker.env (0600); never in git.
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-5-mini
+# 0 deliberately blocks billable calls until an allowance is approved.
+# Call count is NOT a dollar budget. 6000 output tokens max per call.
+WORKER_DAILY_CALLS=0
+WORKER_MAX_ROUNDS=12
