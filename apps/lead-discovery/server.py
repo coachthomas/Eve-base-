@@ -7,6 +7,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from collector import canonical
+
 APP = Path(__file__).parent
 DB = Path(os.environ.get('EVE_LEADS_DB', str(Path.home() / '.eve' / 'opportunities.sqlite3')))
 STATUSES = ['new', 'reviewed', 'contacted', 'replied', 'booked', 'paid', 'dismissed']
@@ -24,7 +26,21 @@ def connect():
 
 def validate(data):
     url = str(data.get('url', '')).strip()
+    # Normalize and validate the incoming URL to improve local deduplication and
+    # avoid saving equivalent links (for example Google wrapper URLs or UTM noise).
+    try:
+        url = canonical(url)
+    except Exception:
+        raise ValueError('Enter a public HTTP/HTTPS source link without credentials.')
+
     parsed = urlsplit(url)
+    # Reject Google search/result pages or other non-source Google pages. The
+    # canonical() helper unwraps Google wrapper URLs ("/url?url=...") into the
+    # underlying destination; but plain search or alerts pages should not be
+    # accepted as a source link.
+    if parsed.hostname in ('www.google.com', 'google.com'):
+        raise ValueError('Enter a public HTTP/HTTPS source link without credentials.')
+
     if parsed.scheme not in ['http', 'https'] or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError('Enter a public HTTP/HTTPS source link without credentials.')
     values = {key: str(data.get(key, '')).strip() for key in ['excerpt', 'need', 'fit', 'intent', 'published']}
